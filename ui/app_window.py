@@ -1,3 +1,5 @@
+import os
+import sys
 import customtkinter as ctk
 import threading
 import time
@@ -20,6 +22,10 @@ class AppWindow:
         # Initialize the main application window
         self.root = ctk.CTk()
         self.root.title("Concurrent File Converter")
+        # Set the window icon
+        icon_path = self._get_resource_path("app_icon.ico")
+        if os.path.exists(icon_path):
+            self.root.iconbitmap(icon_path)
         self.root.geometry("500x400")
         
         # Build the user interface elements
@@ -155,6 +161,12 @@ class AppWindow:
         # Restore the UI elements to their default state after successful completion
         self.status_label.configure(text="Conversion Complete!", text_color="green")
         self.convert_btn.configure(state="normal")
+
+    def _get_resource_path(self, relative_path):
+        """ Get absolute path to resource, works for dev and for PyInstaller """
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, relative_path)
+        return os.path.join(os.path.abspath("."), relative_path)
 
     def run(self):
         # Start the main event loop of the CustomTkinter window
