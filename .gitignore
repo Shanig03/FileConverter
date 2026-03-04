@@ -2,7 +2,7 @@
 __pycache__/
 *.pyc
 
-# Ignore virtual environments (if you use one)
+# Ignore virtual environments 
 venv/
 env/
 
