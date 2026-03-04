@@ -3,13 +3,12 @@ import threading
 import time
 from tkinter import filedialog 
 
-# Fixes the 'BatchProcessor is not defined' error
 from core.batch_processor import BatchProcessor 
 
 # Import the converter strategy
 from converters.video_to_audio import VideoToAudioConverter
-# from converters.pdf_to_image import PdfToImageConverter
-# from converters.image_to_pdf import ImageToPdfConverter
+from converters.pdf_to_image import PdfToImageConverter
+from converters.image_to_pdf import ImageToPdfConverter
 
 # Set the overall appearance and color theme of the CustomTkinter UI
 ctk.set_appearance_mode("System")
@@ -75,7 +74,7 @@ class AppWindow:
         selected_type = self.conversion_type_combo.get()
         print(f"User selected: {selected_type}")
 
-        # 1. Ask the user to select input files
+        # Ask the user to select input files
         # Returns a tuple of file paths, or an empty tuple if cancelled
         input_files = filedialog.askopenfilenames(
             title="Select files to convert"
@@ -98,16 +97,14 @@ class AppWindow:
             self.root.after(0, self._on_conversion_aborted)
             return
 
-        # 2. Instantiate the correct Converter class based on user selection
+        # Instantiate the correct Converter class based on user selection
         converter = None
         if selected_type == "Video to Audio (MP3)":
             converter = VideoToAudioConverter()
         elif selected_type == "PDF to Image":
-            # converter = PdfToImageConverter() # Uncomment when implemented
-            pass
+            converter = PdfToImageConverter() # Uncomment when implemented
         elif selected_type == "Image to PDF":
-            # converter = ImageToPdfConverter() # Uncomment when implemented
-            pass
+            converter = ImageToPdfConverter() # Uncomment when implemented
             
         # Safety check in case a strategy is not yet implemented
         if not converter:
@@ -115,12 +112,10 @@ class AppWindow:
             self.root.after(0, self._on_conversion_aborted)
             return
 
-        # 3. Instantiate the BatchProcessor and run the parallel conversion
+        # Instantiate the BatchProcessor and run the parallel conversion
         try:
             processor = BatchProcessor(converter=converter, output_folder=output_folder)
             
-            # This is a blocking call, but since we are in a background thread, 
-            # the UI remains fully responsive!
             results = processor.process_files(input_files)
             
             print(f"Successfully processed {len(results)} files.")
@@ -135,6 +130,11 @@ class AppWindow:
     def _on_conversion_aborted(self):
         # Restore the UI elements if the user cancels or an error occurs
         self.status_label.configure(text="Conversion Cancelled or Failed", text_color="red")
+        self.convert_btn.configure(state="normal")
+
+    def _on_conversion_finished(self):
+        # Restore the UI elements to their default state after successful completion
+        self.status_label.configure(text="Conversion Complete!", text_color="green")
         self.convert_btn.configure(state="normal")
 
     def run(self):
