@@ -11,7 +11,7 @@ class PdfToImageConverter(BaseConverter):
         
         try:
             # Update this path to exactly where you extracted the poppler 'bin' folder on your machine
-            POPPLER_BIN_PATH = r"C:\poppler\Library\bin" 
+            POPPLER_BIN_PATH = r"C:\poppler\poppler-25.12.0\Library\bin" 
             
             # Convert the PDF file using the explicit poppler path for Windows
             pages = convert_from_path(input_file_path, poppler_path=POPPLER_BIN_PATH)
