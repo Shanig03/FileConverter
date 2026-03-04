@@ -13,9 +13,10 @@ Unlike standard, single-threaded scripts, this application leverages Python's `P
   * Video to Audio (MP3) extraction
   * PDF to Image (JPEG) rendering
   * Image to PDF compilation
+  * **Merge PDFs:** Combine multiple PDF documents into a single file in a specified order.
 
 ## Architecture
-* `ui/` - Handles the user interface and main event loop.
+* `ui/` - Handles the user interface and main event loop. Includes special routing for N-to-1 operations like PDF merging.
 * `core/` - Contains the `BatchProcessor` which manages the multiprocessing pool.
 * `converters/` - Contains isolated conversion strategies inheriting from a unified base class.
 
@@ -24,7 +25,7 @@ Unlike standard, single-threaded scripts, this application leverages Python's `P
 ### 1. Python Dependencies
 Ensure you have Python 3 installed, then run:
 ```bash
-pip install moviepy pdf2image Pillow customtkinter
+pip install moviepy pdf2image Pillow customtkinter pypdf
 ```
 ### 2. System Dependencies (Poppler for PDF Conversion)
 To convert PDFs to images, the pdf2image library requires Poppler.
