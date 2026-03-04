@@ -9,6 +9,7 @@ from core.batch_processor import BatchProcessor
 from converters.video_to_audio import VideoToAudioConverter
 from converters.pdf_to_image import PdfToImageConverter
 from converters.image_to_pdf import ImageToPdfConverter
+from converters.merge_pdfs import MergePdfsConverter
 
 # Set the overall appearance and color theme of the CustomTkinter UI
 ctk.set_appearance_mode("System")
@@ -36,7 +37,7 @@ class AppWindow:
         # Dropdown menu to select the desired conversion strategy
         self.conversion_type_combo = ctk.CTkComboBox(
             self.root, 
-            values=["PDF to Image", "Image to PDF", "Video to Audio (MP3)"],
+            values=["PDF to Image", "Image to PDF", "Video to Audio (MP3)", "Merge PDFs"],
             width=250
         )
         self.conversion_type_combo.pack(pady=15)
@@ -97,6 +98,24 @@ class AppWindow:
             self.root.after(0, self._on_conversion_aborted)
             return
 
+        # Handle the special N-to-1 conversion case (Merging)
+        if selected_type == "Merge PDFs":
+            try:
+                # Instantiate the merge converter directly
+                converter = MergePdfsConverter()
+                
+                # Pass the entire tuple/list of files to the converter
+                result_path = converter.convert(input_files, output_folder)
+                
+                print(f"Successfully merged files into: {result_path}")
+                self.root.after(0, self._on_conversion_finished)
+            except Exception as e:
+                print(f"Failed to merge PDFs: {e}")
+                self.root.after(0, self._on_conversion_aborted)
+                
+            # Exit the function early so it doesn't proceed to the BatchProcessor
+            return
+        
         # Instantiate the correct Converter class based on user selection
         converter = None
         if selected_type == "Video to Audio (MP3)":
