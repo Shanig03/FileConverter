@@ -1,4 +1,4 @@
-# Concurrent File Converter Pro
+# Concurrent File Converter
 
 A modern, high-performance desktop application built with Python and CustomTkinter for bulk file conversions. 
 
